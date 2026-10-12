@@ -1,4 +1,4 @@
-# JiraConsult
+# jira-consult
 
 CLI en Python para consultar, actualizar y comentar tickets de Jira desde la terminal, con utilitarios para generar contenido con el formato nativo de Jira (código, tablas, paneles, colapsables, colores, etc.).
 
