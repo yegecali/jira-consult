@@ -23,21 +23,23 @@ class JiraConfigError(Exception):
 
 
 class JiraClient:
-    def __init__(self, base_url=None, email=None, api_token=None):
+    def __init__(self, base_url=None, session_token=None):
         self.base_url = (base_url or os.getenv("JIRA_BASE_URL", "")).rstrip("/")
-        self.email = email or os.getenv("JIRA_EMAIL")
-        self.api_token = api_token or os.getenv("JIRA_API_TOKEN")
+        self.session_token = session_token or os.getenv("JIRA_TENANT_SESSION_TOKEN")
 
-        if not all([self.base_url, self.email, self.api_token]):
+        if not all([self.base_url, self.session_token]):
             raise JiraConfigError(
-                "Faltan credenciales. Define JIRA_BASE_URL, JIRA_EMAIL y "
-                "JIRA_API_TOKEN (en variables de entorno o en un archivo .env)."
+                "Faltan credenciales. Define JIRA_BASE_URL y JIRA_TENANT_SESSION_TOKEN "
+                "(en variables de entorno o en un archivo .env)."
             )
 
-        self.auth = (self.email, self.api_token)
+        # Autenticación con la cookie de sesión del navegador (tenant.session.token),
+        # en lugar de Basic Auth con email + API token.
         self.session = requests.Session()
-        self.session.auth = self.auth
-        self.session.headers.update({"Accept": "application/json"})
+        self.session.headers.update({
+            "Accept": "application/json",
+            "Cookie": f"tenant.session.token={self.session_token}",
+        })
         self._fields_cache = None
 
     def get_issue(self, issue_key, fields=None):

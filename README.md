@@ -20,13 +20,18 @@ cp .env.example .env
 
 ```
 JIRA_BASE_URL=https://tuempresa.atlassian.net
-JIRA_EMAIL=tu-correo@empresa.com
-JIRA_API_TOKEN=tu_api_token_aqui
+JIRA_TENANT_SESSION_TOKEN=valor_de_la_cookie_tenant.session.token
 ```
 
-El token se genera en: https://id.atlassian.com/manage-profile/security/api-tokens
+El valor de `JIRA_TENANT_SESSION_TOKEN` es la cookie `tenant.session.token` de tu sesión en Jira:
 
-> Este CLI está pensado para **Jira Cloud** (autenticación con email + API token).
+1. Abre tu instancia de Jira en Chrome e inicia sesión.
+2. Abre DevTools (`Cmd+Option+I`) → pestaña **Almacenamiento** → **Cookies** → `https://tuempresa.atlassian.net`.
+3. Copia el **valor** de la cookie `tenant.session.token`.
+
+> Esta cookie es una sesión activa de tu navegador: trátala como una contraseña, no la subas al repositorio y no la compartas. Caduca cuando se cierra la sesión en Jira; si el CLI empieza a responder `401`, copia una nueva.
+
+> Este CLI está pensado para **Jira Cloud**.
 
 Verifica que las credenciales funcionan sin tocar ningún ticket:
 
